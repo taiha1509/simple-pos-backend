@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route url="/V1/api/security/login" method="POST">
+        <service class="Magestore\POS\Api\StaffRepositoryInterface" method="login"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+
+    <route url="/V1/api/security/auth" method="POST">
+        <service class="Magestore\POS\Api\StaffRepositoryInterface" method="authorize"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+
+    <route url="/V1/api/products/getProduct" method="POST">
+        <service class="Magestore\POS\Api\ProductRepositoryInterface" method="getListProductVisibleOnPos"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+
+    <route url="/V1/api/customers/getCustomer" method="GET">
+        <service class="Magestore\POS\Api\CustomerRepositoryInterface" method="getAll"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+
+    <route url="/V1/api/orders/getOrder/:pos_id" method="GET">
+        <service class="Magestore\POS\Api\OrderRepositoryInterface" method="getAllByPosId"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+
+</routes>

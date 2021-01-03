@@ -1,0 +1,13 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Magestore_POS::staff" title="Simple POS" module="Magestore_POS"
+             sortOrder="30" resource="Magestore_POS::staff"/>
+        <add id="Magestore_POS::staff_manage" title="Manage Staff" module="Magestore_POS"
+             sortOrder="1" parent="Magestore_POS::staff" action="posmanagement/staff/index" resource="Magestore_POS::staff_manage"/>
+        <add id="Magestore_POS::pos_manage" title="Manage Pos" module="Magestore_POS"
+             sortOrder="1" parent="Magestore_POS::staff" action="posmanagement/pos/index" resource="Magestore_POS::staff_manage"/>
+        <add id="Magestore_POS::pos_test" title="Test" module="Magestore_POS"
+             sortOrder="1" parent="Magestore_POS::staff" action="posmanagement/test/index" resource="Magestore_POS::staff_manage"/>
+</menu>
+</config>
+

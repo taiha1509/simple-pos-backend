@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magestore\POS\Model\ResourceModel\Staff\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">POS_staff</argument>
+            <argument name="resourceModel" xsi:type="string">Magestore\POS\Model\ResourceModel\Staff</argument>
+        </arguments>
+    </type>
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="pos_staff_listing_data_source" xsi:type="string">Magestore\POS\Model\ResourceModel\Staff\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+
+
+<!--for pos management-->
+    <type name="Magestore\POS\Model\ResourceModel\Pos\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">POS_pos</argument>
+            <argument name="resourceModel" xsi:type="string">Magestore\POS\Model\ResourceModel\Pos</argument>
+        </arguments>
+    </type>
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="pos_pos_listing_data_source" xsi:type="string">Magestore\POS\Model\ResourceModel\Pos\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+
+
+
+    <type name="Magestore\POS\Ui\Component\MassAction\Status\Options">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="urlPath" xsi:type="string">posmanagement/staff/massstatus</item>
+                <item name="paramName" xsi:type="string">status</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Magestore\POS\Ui\Component\MassAction\Status\Pos\Options">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="urlPath" xsi:type="string">posmanagement/pos/massstatus</item>
+                <item name="paramName" xsi:type="string">status</item>
+            </argument>
+        </arguments>
+    </type>
+
+<!--    <type name="Magento\Catalog\Model\Layer">-->
+<!--        <plugin name="staff_list" type="Magestore\POS\Plugin\Catalog\Layer"/>-->
+<!--    </type>-->
+<!--    <type name="Magento\Framework\Data\Collection\AbstractDb">-->
+<!--        <plugin name="vendor_product_list" type="Magestore\Multivendor\Plugin\Catalog\Product\Collection\AbstractDb"/>-->
+<!--    </type>-->
+
+<!--    <type name="Magestore\POS\Block\Adminhtml\Staff\DataProvider\Form\Staff">-->
+<!--        <arguments>-->
+<!--            <argument name="objectManager" xsi:type="string">\Magento\Framework\App\ObjectManager</argument>-->
+<!--        </arguments>-->
+<!--    </type>-->
+
+
+    <preference for="Magestore\POS\Api\StaffRepositoryInterface" type="Magestore\POS\Model\StaffRepository"/>
+    <preference for="Magestore\POS\Api\ProductRepositoryInterface" type="Magestore\POS\Model\ProductRepository"/>
+    <preference for="Magestore\POS\Api\Data\StaffInterface" type="Magestore\POS\Model\Staff"/>
+    <preference for="Magestore\POS\Api\CustomerRepositoryInterface" type="Magestore\POS\Model\CustomerRepository"/>
+    <preference for="Magestore\POS\Api\Data\PosInterface" type="Magestore\POS\Model\Pos"/>
+    <preference for="Magestore\POS\Api\Data\LoginResultInterface" type="Magestore\POS\Model\LoginResult"/>
+    <preference for="Magestore\POS\Api\OrderRepositoryInterface" type="Magestore\POS\Model\OrderRepository"/>
+</config>
