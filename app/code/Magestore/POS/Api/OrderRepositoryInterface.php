@@ -14,4 +14,9 @@ interface OrderRepositoryInterface
      * @return SearchResultsInterface
      */
     public function getAllByPosId($pos_id);
+
+    /**
+     * @return array
+     */
+    public function createOrder();
 }
