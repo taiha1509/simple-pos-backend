@@ -7,6 +7,8 @@ namespace Magestore\POS\Model;
 use Magento\Framework\Api\SortOrder;
 use Magestore\POS\Api\Data\ProductResultsInterface;
 use Magestore\POS\Api\ProductRepositoryInterface;
+use Magento\Catalog\Model\Product\Type as ProductType;
+use Magento\ConfigurableProduct\Model\Product\Type\Configurable as ConfigurableType;
 
 class ProductRepository implements ProductRepositoryInterface
 {
@@ -25,6 +27,10 @@ class ProductRepository implements ProductRepositoryInterface
 
     protected $configurable;
 
+    protected $getSalableQuantityDataBySku;
+
+    protected $productFactory;
+
 
     public function __construct(
         \Magento\Catalog\Api\Data\ProductSearchResultsInterfaceFactory $searchResultsFactory,
@@ -33,7 +39,9 @@ class ProductRepository implements ProductRepositoryInterface
         \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
         \Magestore\POS\Api\Data\ProductResultsInterfaceFactory $productResultsInterfaceFactory,
         \Magestore\POS\Model\StockFactory $stockFactory,
-        \Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable $configurable
+        \Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable $configurable,
+        \Magento\InventorySalesAdminUi\Model\GetSalableQuantityDataBySku $getSalableQuantityDataBySku,
+        \Magento\Catalog\Model\ProductFactory $productFactory
     )
     {
         $this->searchResultsFactory = $searchResultsFactory;
@@ -43,6 +51,8 @@ class ProductRepository implements ProductRepositoryInterface
         $this->productResultsInterfaceFactory = $productResultsInterfaceFactory;
         $this->stockFactory = $stockFactory;
         $this->configurable = $configurable;
+        $this->getSalableQuantityDataBySku = $getSalableQuantityDataBySku;
+        $this->productFactory = $productFactory;
     }
 
     /**
@@ -64,7 +74,8 @@ class ProductRepository implements ProductRepositoryInterface
         //only get product having property isVisibleOnPOS = 1
         $collection->addAttributeToFilter('isVisibleOnPOS', array('eq' => 1));
 
-        $searchResult->setTotalCount($this->getTotalCountDisplayedProduct());
+        var_dump($searchCriteria);
+        die;
 
         foreach ($searchCriteria->getFilterGroups() as $filterGroup) {
             foreach ($filterGroup->getFilters() as $filter) {
@@ -76,6 +87,7 @@ class ProductRepository implements ProductRepositoryInterface
         $collection->setCurPage($searchCriteria->getCurrentPage());
         $collection->setPageSize($searchCriteria->getPageSize());
 
+        $searchResult->setTotalCount($this->getTotalCountDisplayedProduct($searchCriteria));
         $sortOrdersData = $searchCriteria->getSortOrders();
         if ($sortOrdersData) {
             foreach ($sortOrdersData as $sortOrder) {
@@ -97,8 +109,15 @@ class ProductRepository implements ProductRepositoryInterface
     /**
      * @return int
      */
-    public function getTotalCountDisplayedProduct(){
+    public function getTotalCountDisplayedProduct($searchCriteria){
         $productCollection = $this->productCollectionFactory->create();
+        foreach ($searchCriteria->getFilterGroups() as $filterGroup) {
+            foreach ($filterGroup->getFilters() as $filter) {
+                $condition = $filter->getConditionType();
+                $productCollection->addAttributeToSelect('*')
+                    ->addFieldToFilter($filter->getField(), [$condition => $filter->getValue()]);
+            }
+        }
         $productCollection->addAttributeToFilter('isVisibleOnPOS', array('eq' => 1));
         $count = 0;
         foreach ($productCollection as $item) {
@@ -118,19 +137,30 @@ class ProductRepository implements ProductRepositoryInterface
         $stock = $this->stockFactory->create();
         foreach ($id as $product_id){
             $product = $this->productResultsInterfaceFactory->create();
-            $qty = $stock->getStockQty($product_id);
-            $product->setQty($qty);
             $parent_id = $this->configurable->getParentIdsByChild($product_id);
-            if(isset($parent_id[0]))
-                $product->setParentId($parent_id[0]);
-            else
+            $productModel = $this->productFactory->create();
+            $productModel->load($product_id);
+            if($productModel->getTypeId() == ProductType::TYPE_SIMPLE){
+//                $product->setParentId($product_id);
+                $sableQty = $this->getSalableQuantityDataBySku->execute($productModel->getSku());
+                $qty = $sableQty[0]['qty'];
+                if(isset($parent_id[0])) {
+                    $product->setParentId($parent_id[0]);
+                }else{
+                    $product->setParentId(($product_id));
+                }
+            }elseif ($productModel->getTypeId() == ConfigurableType::TYPE_CODE){
+                $qty = 0;
                 $product->setParentId($product_id);
+            }
+//            $qty = $stock->getStockQty($product_id);
+
+            $product->setQty($qty);
+
             array_push($result, $product);
         }
 
         return $result;
     }
-
-
 
 }

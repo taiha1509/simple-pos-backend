@@ -16,7 +16,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @param \Magento\Framework\App\Helper\Context $context
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param \Magento\Catalog\Model\Product $product,
+     * @param \Magento\Catalog\Model\ProductFactory $product,
      * @param \Magento\Quote\Api\CartRepositoryInterface $cartRepositoryInterface,
      * @param \Magento\Quote\Api\CartManagementInterface $cartManagementInterface,
      * @param \Magento\Customer\Model\CustomerFactory $customerFactory,
@@ -27,7 +27,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Catalog\Model\Product $product,
+        \Magento\Catalog\Model\ProductFactory $product,
         \Magento\Quote\Api\CartRepositoryInterface $cartRepositoryInterface,
         \Magento\Quote\Api\CartManagementInterface $cartManagementInterface,
         \Magento\Customer\Model\CustomerFactory $customerFactory,
@@ -50,17 +50,19 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * Create Order On Your Store
      *
      * @param array $orderData
+     * @param int $pos_id
+     *
      * @return array
      *
      */
-    public function createMageOrder($orderData) {
+    public function createMageOrder($orderData, $pos_id) {
         $store=$this->_storeManager->getStore();
         $websiteId = $this->_storeManager->getStore()->getWebsiteId();
 
         //save customer
         $customer=$this->customerFactory->create();
         $customer->setWebsiteId($websiteId);
-        $customer->loadByEmail($orderData['email']);// load customet by email address
+        $customer->loadByEmail($orderData['email']);// load customer by email address
 
         if(!$customer->getEntityId()){
             //If not avilable then create this customer
@@ -86,11 +88,14 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
         //add items in quote
         foreach($orderData['items'] as $item){
-            $product=$this->_product->load($item['product_id']);
+            $product=$this->_product->create()->load($item['product_id']);
             $product->setPrice($item['price']);
-            $quote->addProduct($product, intval($item['qty']));
+//            $product->setQty(intval($item['qty']));
+            $quote->addProduct($product, ($item['qty']));
         }
 
+//        var_dump($quote->getData());
+//        die;
         //Set Address to quote
         $quote->getBillingAddress()->addData($orderData['shipping_address']);
         $quote->getShippingAddress()->addData($orderData['shipping_address']);
@@ -119,8 +124,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
         $orderId = $this->cartManagementInterface->placeOrder($quote->getId());
         $order = $this->order->load($orderId);
-
+        $order->setData('pos_id', $pos_id);
         $order->setEmailSent(0);
+        $order->save();
         $increment_id = $order->getRealOrderId();
 
         if($order->getEntityId()){

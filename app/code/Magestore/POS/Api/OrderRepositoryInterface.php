@@ -16,7 +16,9 @@ interface OrderRepositoryInterface
     public function getAllByPosId($pos_id);
 
     /**
-     * @return array
+     * @param mixed $data
+     * @param int $pos_id
+     * @return int
      */
-    public function createOrder();
+    public function createOrder($data, $pos_id);
 }
