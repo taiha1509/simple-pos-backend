@@ -5,6 +5,7 @@ namespace Magestore\POS\Api;
 
 
 use Magento\Framework\Api\SearchResultsInterface;
+use Magestore\POS\Api\Data\ArrayItemsOrderInterface;
 use Magestore\POS\Api\Data\ItemsOrderInterface;
 
 interface OrderRepositoryInterface
@@ -25,7 +26,7 @@ interface OrderRepositoryInterface
 
     /**
      * @param int[] $list_id
-     * @return ItemsOrderInterface[]
+     * @return ArrayItemsOrderInterface[]
      */
     public function getAdditionalInfo($list_id);
 }

@@ -34,8 +34,8 @@ class MassDelete extends AbstractMassAction
     protected function massAction(Collection $collection)
     {
         $count = 0;
-        var_dump(1);
-        die;
+//        var_dump(1);
+//        die;
         foreach ($collection as $staff) {
             $staff->delete();
             $count ++ ;

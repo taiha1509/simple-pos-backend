@@ -4,8 +4,6 @@
 namespace Magestore\POS\Model;
 
 
-use Magestore\POS\Api\Data\ItemsOrderInterface;
-
 class OrderRepository implements \Magestore\POS\Api\OrderRepositoryInterface
 {
     protected $searchResultsInterface;
@@ -26,6 +24,8 @@ class OrderRepository implements \Magestore\POS\Api\OrderRepositoryInterface
 
     protected $productCollectionFactory;
 
+    protected $arrayItemsOrderInterfaceFactory;
+
 
     /**
      * OrderRepository constructor.
@@ -38,6 +38,7 @@ class OrderRepository implements \Magestore\POS\Api\OrderRepositoryInterface
      * @param \Magestore\POS\Api\Data\ItemsOrderInterfaceFactory $itemsOrderInterfaceFactory
      * @param \Magento\Catalog\Model\ProductFactory $productFactory
      * @param \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory
+     * @param \Magestore\POS\Api\Data\ArrayItemsOrderInterfaceFactory $arrayItemsOrderInterfaceFactory
      */
     public function __construct(
         \Magento\Framework\Api\SearchResultsInterface $searchResultsInterface,
@@ -48,7 +49,8 @@ class OrderRepository implements \Magestore\POS\Api\OrderRepositoryInterface
         \Magento\Sales\Model\OrderFactory $orderFactory,
         \Magestore\POS\Api\Data\ItemsOrderInterfaceFactory $itemsOrderInterfaceFactory,
         \Magento\Catalog\Model\ProductFactory $productFactory,
-        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory
+        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
+        \Magestore\POS\Api\Data\ArrayItemsOrderInterfaceFactory $arrayItemsOrderInterfaceFactory
     )
     {
         $this->searchResultsInterface = $searchResultsInterface;
@@ -60,6 +62,7 @@ class OrderRepository implements \Magestore\POS\Api\OrderRepositoryInterface
         $this->itemsOrderInterfaceFactory = $itemsOrderInterfaceFactory;
         $this->productFactory = $productFactory;
         $this->productCollectionFactory = $productCollectionFactory;
+        $this->arrayItemsOrderInterfaceFactory = $arrayItemsOrderInterfaceFactory;
     }
 
     /**
@@ -108,6 +111,8 @@ class OrderRepository implements \Magestore\POS\Api\OrderRepositoryInterface
 
         $result = array();
 
+        $arrayItemsOrderInterface = $this->arrayItemsOrderInterfaceFactory->create();
+
         foreach($orderCollection as $item){
             $itemArray = $item->getAllItems();
             foreach($itemArray as $element){
@@ -125,11 +130,13 @@ class OrderRepository implements \Magestore\POS\Api\OrderRepositoryInterface
                 }
 
             }
-            array_push($result, $item_info);
+            $arrayItemsOrderInterface->setData($item_info);
+
+            array_push($result, $arrayItemsOrderInterface);
+            $arrayItemsOrderInterface->clearData();
             $item_info=array();
         }
         return $result;
-
     }
 
     /**
