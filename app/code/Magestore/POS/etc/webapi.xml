@@ -50,4 +50,11 @@
         </resources>
     </route>
 
+    <route url="/V1/api/orders/getAdditionalInfo" method="POST">
+        <service class="Magestore\POS\Api\OrderRepositoryInterface" method="getAdditionalInfo"/>
+        <resources>
+            <resource ref="anonymous" />
+        </resources>
+    </route>
+
 </routes>

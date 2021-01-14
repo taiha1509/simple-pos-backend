@@ -74,9 +74,6 @@ class ProductRepository implements ProductRepositoryInterface
         //only get product having property isVisibleOnPOS = 1
         $collection->addAttributeToFilter('isVisibleOnPOS', array('eq' => 1));
 
-        var_dump($searchCriteria);
-        die;
-
         foreach ($searchCriteria->getFilterGroups() as $filterGroup) {
             foreach ($filterGroup->getFilters() as $filter) {
                 $condition = $filter->getConditionType();

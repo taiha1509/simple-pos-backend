@@ -4,6 +4,8 @@
 namespace Magestore\POS\Model;
 
 
+use Magestore\POS\Api\Data\ItemsOrderInterface;
+
 class OrderRepository implements \Magestore\POS\Api\OrderRepositoryInterface
 {
     protected $searchResultsInterface;
@@ -18,6 +20,12 @@ class OrderRepository implements \Magestore\POS\Api\OrderRepositoryInterface
 
     protected $orderFactory;
 
+    protected $itemsOrderInterfaceFactory;
+
+    protected $productFactory;
+
+    protected $productCollectionFactory;
+
 
     /**
      * OrderRepository constructor.
@@ -27,6 +35,9 @@ class OrderRepository implements \Magestore\POS\Api\OrderRepositoryInterface
      * @param \Magento\Framework\App\RequestInterface $requestInterface
      * @param \Magestore\POS\Helper\Order\DataFactory $orderHelperFactory
      * @param \Magento\Sales\Model\OrderFactory $orderFactory
+     * @param \Magestore\POS\Api\Data\ItemsOrderInterfaceFactory $itemsOrderInterfaceFactory
+     * @param \Magento\Catalog\Model\ProductFactory $productFactory
+     * @param \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory
      */
     public function __construct(
         \Magento\Framework\Api\SearchResultsInterface $searchResultsInterface,
@@ -34,7 +45,10 @@ class OrderRepository implements \Magestore\POS\Api\OrderRepositoryInterface
         \Magestore\POS\Api\Data\StaffInterface $staffInterface,
         \Magento\Framework\App\RequestInterface $requestInterface,
         \Magestore\POS\Helper\Order\DataFactory $orderHelperFactory,
-        \Magento\Sales\Model\OrderFactory $orderFactory
+        \Magento\Sales\Model\OrderFactory $orderFactory,
+        \Magestore\POS\Api\Data\ItemsOrderInterfaceFactory $itemsOrderInterfaceFactory,
+        \Magento\Catalog\Model\ProductFactory $productFactory,
+        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory
     )
     {
         $this->searchResultsInterface = $searchResultsInterface;
@@ -43,6 +57,9 @@ class OrderRepository implements \Magestore\POS\Api\OrderRepositoryInterface
         $this->staffInterface = $staffInterface;
         $this->orderHelperFactory = $orderHelperFactory;
         $this->orderFactory = $orderFactory;
+        $this->itemsOrderInterfaceFactory = $itemsOrderInterfaceFactory;
+        $this->productFactory = $productFactory;
+        $this->productCollectionFactory = $productCollectionFactory;
     }
 
     /**
@@ -64,6 +81,54 @@ class OrderRepository implements \Magestore\POS\Api\OrderRepositoryInterface
         $this->searchResultsInterface->setTotalCount($orderCollection->getSize());
         $this->searchResultsInterface->setItems($orderCollection->getData());
         return $this->searchResultsInterface;
+
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAdditionalInfo($list_id){
+        $product = $this->productFactory->create();
+        $productCollection = $this->productCollectionFactory->create();
+        $orderCollection = $this->orderCollectionFactory->create();
+        $item_info = array();
+        $itemOrder = $this->itemsOrderInterfaceFactory->create();
+        $orderCollection->addFieldToFilter('entity_id', array('in', $list_id));
+
+        $ids = array();
+
+        foreach($orderCollection as $item){
+            $itemArray = $item->getAllItems();
+            foreach($itemArray as $element){
+                array_push($ids, $element->getItemId());
+            }
+        }
+        $productCollection->addAttributeToSelect('*');
+        $productCollection->addFieldToFilter('entity_id', array('in', $ids));
+
+        $result = array();
+
+        foreach($orderCollection as $item){
+            $itemArray = $item->getAllItems();
+            foreach($itemArray as $element){
+                $id = $element->getItemId();
+                foreach ($productCollection as $pro){
+                    if($pro->getId() == $id){
+                        $itemOrder->setId($element->getItemId());
+                        $itemOrder->setQty($element->getQtyOrdered());
+                        $itemOrder->setPrice($element->getPrice());
+                        $itemOrder->setName($pro->getName());
+                        $itemOrder->setSku($pro->getSku());
+                        array_push($item_info, $itemOrder);
+//                        return $item_info;
+                    }
+                }
+
+            }
+            array_push($result, $item_info);
+            $item_info=array();
+        }
+        return $result;
 
     }
 

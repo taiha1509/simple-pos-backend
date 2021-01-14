@@ -72,4 +72,5 @@
     <preference for="Magestore\POS\Api\Data\LoginResultInterface" type="Magestore\POS\Model\LoginResult"/>
     <preference for="Magestore\POS\Api\OrderRepositoryInterface" type="Magestore\POS\Model\OrderRepository"/>
     <preference for="Magestore\POS\Api\Data\ProductResultsInterface" type="Magestore\POS\Model\ProductResults"/>
+    <preference for="Magestore\POS\Api\Data\ItemsOrderInterface" type="Magestore\POS\Model\ItemsOrder"/>
 </config>
