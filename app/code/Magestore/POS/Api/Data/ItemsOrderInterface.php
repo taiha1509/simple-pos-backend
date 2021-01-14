@@ -59,15 +59,5 @@ interface ItemsOrderInterface
      */
     public function setSku($sku);
 
-    /**
-     * @return \Magestore\POS\Api\Data\ItemsOrderInterface[]
-     */
-    public function getData();
-
-    /**
-     * @param \Magestore\POS\Api\Data\ItemsOrderInterface[]
-     * @return void
-     */
-    public function setDate($data);
 
 }

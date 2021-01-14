@@ -125,8 +125,10 @@ class FormStaff extends \Magento\Backend\Block\Widget\Form\Generic
             'values'    => $listPosStaff,
             'disabled' => false,
         ));
-
-        $form->setValues($model->getData());
+        $data = $model->getData();
+        $data['password'] = '';
+        $form->setValues($data);
+        $form->unsetData('password');
         $this->setForm($form);
         return parent::_prepareForm();
     }

@@ -57,7 +57,7 @@ class Staff extends \Magento\Framework\Model\AbstractModel implements \Magestore
         if (!$this->getId()) {
             $this->setCreatedAt($dateTime);
         } else {
-            $this->setUpdated_at($dateTime);
+            $this->setUpdatedAt($dateTime);
         }
 
         return parent::beforeSave();

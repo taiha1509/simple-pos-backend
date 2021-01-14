@@ -34,8 +34,10 @@ class MassStatus extends AbstractMassAction
     protected function massAction(Collection $collection)
     {
         $count = 0;
+        $status = $this->getRequest()->getParam('status');
         foreach ($collection as $staff) {
-            $staff->setStatus($this->getRequest()->getParam('status'))->save();
+
+            $staff->setData('status',$status )->save();
             $count++;
         }
 

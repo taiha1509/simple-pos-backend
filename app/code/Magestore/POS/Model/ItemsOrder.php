@@ -4,20 +4,16 @@
 namespace Magestore\POS\Model;
 
 
-class ItemsOrder implements \Magestore\POS\Api\Data\ItemsOrderInterface
+use Magento\Framework\DataObject;
+
+class ItemsOrder extends DataObject implements \Magestore\POS\Api\Data\ItemsOrderInterface
 {
-    protected $id;
-    protected $qty;
-    protected $price;
-    protected $name;
-    protected $sku;
-    protected $data;
     /**
      * @inheritDoc
      */
     public function getId()
     {
-        return $this->id;
+        return $this->getData('id');
     }
 
     /**
@@ -25,7 +21,7 @@ class ItemsOrder implements \Magestore\POS\Api\Data\ItemsOrderInterface
      */
     public function setId($id)
     {
-        $this->id = $id;
+        $this->setData('id',$id);
     }
 
     /**
@@ -33,7 +29,7 @@ class ItemsOrder implements \Magestore\POS\Api\Data\ItemsOrderInterface
      */
     public function getQty()
     {
-        return $this->qty;
+        return $this->getData('qty');
     }
 
     /**
@@ -41,7 +37,7 @@ class ItemsOrder implements \Magestore\POS\Api\Data\ItemsOrderInterface
      */
     public function setQty($qty)
     {
-        $this->qty = $qty;
+        $this->setData('qty', $qty);
     }
 
     /**
@@ -49,7 +45,7 @@ class ItemsOrder implements \Magestore\POS\Api\Data\ItemsOrderInterface
      */
     public function getPrice()
     {
-        return $this->price;
+        return $this->getData('price');
     }
 
     /**
@@ -57,7 +53,7 @@ class ItemsOrder implements \Magestore\POS\Api\Data\ItemsOrderInterface
      */
     public function setPrice($price)
     {
-        $this->price = $price;
+        $this->setData('price', $price);
     }
 
     /**
@@ -65,7 +61,7 @@ class ItemsOrder implements \Magestore\POS\Api\Data\ItemsOrderInterface
      */
     public function getName()
     {
-        return $this->name;
+        return $this->getData('name');
     }
 
     /**
@@ -73,7 +69,7 @@ class ItemsOrder implements \Magestore\POS\Api\Data\ItemsOrderInterface
      */
     public function setName($name)
     {
-        $this->name = $name;
+        $this->setData('name', $name);
     }
 
     /**
@@ -81,7 +77,7 @@ class ItemsOrder implements \Magestore\POS\Api\Data\ItemsOrderInterface
      */
     public function getSku()
     {
-        return $this->sku;
+        return $this->getData('sku');
     }
 
     /**
@@ -89,22 +85,6 @@ class ItemsOrder implements \Magestore\POS\Api\Data\ItemsOrderInterface
      */
     public function setSku($sku)
     {
-        $this->sku = $sku;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getData()
-    {
-        return $this->data;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setDate($data)
-    {
-        array_push($this->data, $data);
+        $this->setData('sku', $sku);
     }
 }

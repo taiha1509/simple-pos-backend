@@ -4,6 +4,8 @@
 namespace Magestore\POS\Model;
 
 
+use Magento\Framework\App\ObjectManager;
+
 class OrderRepository implements \Magestore\POS\Api\OrderRepositoryInterface
 {
     protected $searchResultsInterface;
@@ -25,6 +27,7 @@ class OrderRepository implements \Magestore\POS\Api\OrderRepositoryInterface
     protected $productCollectionFactory;
 
     protected $arrayItemsOrderInterfaceFactory;
+
 
 
     /**
@@ -111,7 +114,10 @@ class OrderRepository implements \Magestore\POS\Api\OrderRepositoryInterface
 
         $result = array();
 
-        $arrayItemsOrderInterface = $this->arrayItemsOrderInterfaceFactory->create();
+//        $arrayItemsOrderInterface = $this->arrayItemsOrderInterfaceFactory->create();
+
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $arrayItemsOrderInterface = $objectManager->create(\Magestore\POS\Api\Data\ArrayItemsOrderInterface::class);
 
         foreach($orderCollection as $item){
             $itemArray = $item->getAllItems();
@@ -130,10 +136,9 @@ class OrderRepository implements \Magestore\POS\Api\OrderRepositoryInterface
                 }
 
             }
-            $arrayItemsOrderInterface->setData($item_info);
-
+            $arrayItemsOrderInterface->setItems($item_info);
             array_push($result, $arrayItemsOrderInterface);
-            $arrayItemsOrderInterface->clearData();
+//            $arrayItemsOrderInterface->clearData();
             $item_info=array();
         }
         return $result;

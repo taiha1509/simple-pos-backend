@@ -10,17 +10,12 @@ interface ArrayItemsOrderInterface
      * @param \Magestore\POS\Api\Data\ItemsOrderInterface[] $data
      * @return void
      */
-    public function setData($data);
+    public function setItems($data);
 
     /**
-     * @return array
+     * @return \Magestore\POS\Api\Data\ItemsOrderInterface[]
      */
-    public function getData();
-
-    /**
-     * @return void
-     */
-    public function clearData();
+    public function getItems();
 }
 
 

@@ -28,6 +28,7 @@ abstract class AbstractMassAction extends \Magento\Backend\App\Action
      */
     public function execute()
     {
+
         try {
             $collection = $this->filter->getCollection($this->collectionFactory->create());
             return $this->massAction($collection);

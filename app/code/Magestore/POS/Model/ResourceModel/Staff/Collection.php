@@ -6,6 +6,7 @@ namespace Magestore\POS\Model\ResourceModel\Staff;
 
 class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
 {
+    protected $_idFieldName = 'id';
     public function _construct()
     {
         $this->_init('\Magestore\POS\Model\Staff', '\Magestore\POS\Model\ResourceModel\Staff');

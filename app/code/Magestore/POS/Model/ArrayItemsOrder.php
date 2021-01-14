@@ -4,32 +4,26 @@
 namespace Magestore\POS\Model;
 
 
-class ArrayItemsOrder implements \Magestore\POS\Api\Data\ArrayItemsOrderInterface
+use Magento\Framework\DataObject;
+
+class ArrayItemsOrder extends DataObject implements  \Magestore\POS\Api\Data\ArrayItemsOrderInterface
 {
 
-    protected $data;
+    public $data = [];
 
     /**
      * @inheritDoc
      */
-    public function setData($data)
+    public function setItems($data)
     {
-        array_push($this->data, $data);
+        $this->setData('items', $data);
     }
 
     /**
      * @inheritDoc
      */
-    public function getData()
+    public function getItems()
     {
-        return $this->data;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function clearData()
-    {
-        $this->data = array();
+        return $this->getData('items');
     }
 }

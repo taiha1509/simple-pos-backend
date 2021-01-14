@@ -6,7 +6,13 @@ namespace Magestore\POS\Model;
 
 class Pos extends \Magento\Framework\Model\AbstractModel implements \Magestore\POS\Api\Data\PosInterface
 {
-    protected $_resourceName = \Magestore\POS\Model\ResourceModel\Pos::class;
+//    protected $_resourceName = \Magestore\POS\Model\ResourceModel\Pos::class;
+
+    protected function _construct()
+    {
+        $this->_init(\Magestore\POS\Model\ResourceModel\Pos::class);
+        parent::_construct();
+    }
 
     public function beforeSave()
     {
@@ -63,11 +69,11 @@ class Pos extends \Magento\Framework\Model\AbstractModel implements \Magestore\P
 
     public function setId($id)
     {
-        $this->setData('pos_id', $id);
+        $this->setData('id', $id);
     }
 
     public function getId()
     {
-        return $this->getData('pos_id');
+        return $this->getData('id');
     }
 }

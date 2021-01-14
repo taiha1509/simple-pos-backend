@@ -6,7 +6,7 @@ namespace Magestore\POS\Model\ResourceModel\Staff_Pos;
 
 class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
 {
-
+    protected $_idFieldName = 'id';
     /**
      * @inheritDoc
      */
