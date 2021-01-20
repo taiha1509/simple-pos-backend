@@ -90,18 +90,10 @@ class Save extends \Magento\Framework\App\Action\Action
         if($data){
             $collection = $this->_objectManager->create(\Magestore\POS\Model\ResourceModel\Staff_Pos\Collection::class);
             $model = $this->_objectManager->create(\Magestore\POS\Model\StaffPos::class);
+            $collection->deleteByStaffId($data[0]['staff_id']);
             foreach ($data as $item){
-                $temp = $collection->checkPosOfStaff($item);
-                if($temp){
-                    $model->setData($temp);
-                    $model->delete();
-                }else{
-
-                    $model->setData($item);
-                    $model->save();
-                }
-                unset($model['staff_id']);
-                unset($model['pos_id']);
+                $model->setData($item);
+                $model->save();
             }
         }
     }

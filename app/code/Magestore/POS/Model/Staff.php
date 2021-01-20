@@ -53,7 +53,6 @@ class Staff extends \Magento\Framework\Model\AbstractModel implements \Magestore
     public function beforeSave()
     {
         $dateTime = new \DateTime('now');
-        //var_dump($dateTime->gmtDate());
         if (!$this->getId()) {
             $this->setCreatedAt($dateTime);
         } else {
@@ -135,12 +134,8 @@ class Staff extends \Magento\Framework\Model\AbstractModel implements \Magestore
                     'main_table.id = m2POS_staff_pos.pos_id'
                 )->where('staff_id = '.$staff['staff_id']);
 
-
-//                var_dump($posCollection->getData());
-//                die;
                 $this->load($staff['staff_id']);
                 $this->setToken($sessionModel->getData('token'));
-
                 return $this->setDataResponse(1, 200, 'login successfully', $this, $this->getListPosByStaffId($staff['staff_id']));
             }
         }
@@ -173,9 +168,13 @@ class Staff extends \Magento\Framework\Model\AbstractModel implements \Magestore
         $posCollection = $this->posCollectionFactory->create();
         $posCollection->getSelect()->join(
             'm2POS_staff_pos',
-            'main_table.id = m2POS_staff_pos.pos_id'
+            'main_table.id = m2POS_staff_pos.pos_id',
+            'staff_id'
+
         )->where('staff_id = '.$id);
         $result = array();
+//        var_dump($posCollection->getData());
+//        die;
         foreach ($posCollection as $item){
             array_push($result, $item);
         }

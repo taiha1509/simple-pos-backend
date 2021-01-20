@@ -45,4 +45,15 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         return null;
     }
 
+    /**
+     * @param array $id
+     * @return void
+     */
+    public function deleteByStaffId($id){
+        $connection = $this->getResource()->getConnection();
+        $tableName = $this->getResource()->getTable('POS_staff_pos');
+        $condition = 'staff_id = ';
+        $connection->delete($tableName, $condition.$id);
+    }
+
 }

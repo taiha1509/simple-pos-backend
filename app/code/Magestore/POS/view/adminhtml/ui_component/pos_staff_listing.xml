@@ -24,6 +24,12 @@
 
 
     <dataSource name="pos_staff_listing_data_source">
+        <settings>
+            <storageConfig>
+                <param name="indexField" xsi:type="string">id</param>
+            </storageConfig>
+            <updateUrl path="mui/index/render"/>
+        </settings>
         <argument name="dataProvider" xsi:type="configurableObject">
             <argument name="class" xsi:type="string">Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider</argument>
             <argument name="name" xsi:type="string">pos_staff_listing_data_source</argument>
@@ -114,6 +120,7 @@
                     <item name="storageConfig" xsi:type="array">
                         <item name="provider" xsi:type="string">pos_staff_listing.pos_staff_listing.listing_top.bookmarks</item>
                         <item name="namespace" xsi:type="string">current</item>
+                        <item name="indexField" xsi:type="string">id</item>
                     </item>
 
                     <item name="childDefaults" xsi:type="array">
