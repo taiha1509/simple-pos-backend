@@ -94,13 +94,10 @@ class OrderRepository implements \Magestore\POS\Api\OrderRepositoryInterface
      * @inheritDoc
      */
     public function getAdditionalInfo($list_id){
-        $product = $this->productFactory->create();
-        $productCollection = $this->productCollectionFactory->create();
         $orderCollection = $this->orderCollectionFactory->create();
         $item_info = array();
-        $itemOrder = $this->itemsOrderInterfaceFactory->create();
-        $orderCollection->addFieldToFilter('entity_id', array('in', $list_id));
 
+        $orderCollection->addFieldToFilter('entity_id', array('in', $list_id));
         $ids = array();
 
         foreach($orderCollection as $item){
@@ -109,15 +106,15 @@ class OrderRepository implements \Magestore\POS\Api\OrderRepositoryInterface
                 array_push($ids, $element->getItemId());
             }
         }
+        $productCollection = $this->productCollectionFactory->create();
         $productCollection->addAttributeToSelect('*');
         $productCollection->addFieldToFilter('entity_id', array('in', $ids));
-
         $result = array();
 
 //        $arrayItemsOrderInterface = $this->arrayItemsOrderInterfaceFactory->create();
 
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $arrayItemsOrderInterface = $objectManager->create(\Magestore\POS\Api\Data\ArrayItemsOrderInterface::class);
+
 
         foreach($orderCollection as $item){
             $itemArray = $item->getAllItems();
@@ -125,6 +122,7 @@ class OrderRepository implements \Magestore\POS\Api\OrderRepositoryInterface
                 $id = $element->getItemId();
                 foreach ($productCollection as $pro){
                     if($pro->getId() == $id){
+                        $itemOrder = $this->itemsOrderInterfaceFactory->create();
                         $itemOrder->setId($element->getItemId());
                         $itemOrder->setQty($element->getQtyOrdered());
                         $itemOrder->setPrice($element->getPrice());
@@ -136,6 +134,7 @@ class OrderRepository implements \Magestore\POS\Api\OrderRepositoryInterface
                 }
 
             }
+            $arrayItemsOrderInterface = $objectManager->create(\Magestore\POS\Api\Data\ArrayItemsOrderInterface::class);
             $arrayItemsOrderInterface->setItems($item_info);
             array_push($result, $arrayItemsOrderInterface);
 //            $arrayItemsOrderInterface->clearData();
